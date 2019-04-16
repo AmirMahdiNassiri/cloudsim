@@ -3,6 +3,8 @@ import java.awt.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -68,6 +70,9 @@ public class mainForm extends JFrame {
     private JRadioButton radioBtnMinMin;
     private JRadioButton radioBtnMaxMin;
     private JRadioButton radioBtnGenetic;
+    private JRadioButton radioBtnSameVms;
+    private JRadioButton radioBtnIndividualVms;
+    private JTextArea txtIndividualVmSpecification;
 
 
     private java.util.List<Cloudlet> cloudletList;
@@ -113,6 +118,26 @@ public class mainForm extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 runSimulation();
+            }
+        });
+
+        radioBtnIndividualVms.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    txtVmCount.setEnabled(false);
+                    txtVmCoreCount.setEnabled(false);
+                    txtVmCoreMips.setEnabled(false);
+                    txtVmRam.setEnabled(false);
+                    txtIndividualVmSpecification.setEnabled(true);
+                }
+                else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    txtVmCount.setEnabled(true);
+                    txtVmCoreCount.setEnabled(true);
+                    txtVmCoreMips.setEnabled(true);
+                    txtVmRam.setEnabled(true);
+                    txtIndividualVmSpecification.setEnabled(false);
+                }
             }
         });
 
@@ -221,6 +246,16 @@ public class mainForm extends JFrame {
         vmlist.add(newVm);
     }
 
+    private void createVM(int vmid, int cores, int coreMips, int ram){
+
+        String vmm = "Xen"; //VMM name
+
+        Vm newVm = new Vm(vmid, broker.getId(), coreMips, cores, ram, VmBandwidth, VmImageSize, vmm,
+                new CloudletSchedulerSpaceShared());
+
+        vmlist.add(newVm);
+    }
+
     private void createCloudlet(int cloudletid){
 
         UtilizationModel utilizationModel = new UtilizationModelFull();
@@ -255,8 +290,32 @@ public class mainForm extends JFrame {
             broker = createBroker();
 
             vmlist.clear();
-            for (int i = 0; i < VmCount; i++){
-                createVM(i);
+
+            if (radioBtnSameVms.isSelected()){
+                for (int i = 0; i < VmCount; i++){
+                    createVM(i);
+                }
+            }
+            else {
+
+                String specifications = txtIndividualVmSpecification.getText();
+
+                String[] specsList = specifications.split("-");
+
+                int currentVmId=0;
+
+                for (String vmSpec : specsList){
+
+                    String[] spec = vmSpec.split(",");
+
+                    int cores = Integer.parseInt(spec[0]);
+                    int coreMips = Integer.parseInt(spec[1]);
+                    int ram = Integer.parseInt(spec[2]);
+
+                    createVM(currentVmId, cores, coreMips, ram);
+
+                    currentVmId++;
+                }
             }
 
             broker.submitVmList(vmlist);
