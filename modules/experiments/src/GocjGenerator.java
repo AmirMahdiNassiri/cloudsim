@@ -21,7 +21,7 @@ public class GocjGenerator  {
 
     }
 
-    private static long[] createGoCJ(int num, String originalDatasetPath) throws NumberFormatException, IOException
+    public static long[] createGoCJ(int num, String originalDatasetPath) throws NumberFormatException, IOException
     {
         dataTable = new HashMap<Integer,Long>();
         Random random = new Random();
