@@ -25,3 +25,5 @@ hs_err_pid*
 #intelliJ files
 .idea/
 .idea
+
+output\.txt
