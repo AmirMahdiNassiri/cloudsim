@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bd6fa693-64cb-4fd6-94c0-fc1d96090688" name="Default Changelist" comment="" />
+    <list default="true" id="bd6fa693-64cb-4fd6-94c0-fc1d96090688" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/documentation/target/" />
     <ignored path="$PROJECT_DIR$/distribution/target/" />
     <ignored path="$PROJECT_DIR$/modules/cloudsim/target/" />
@@ -99,11 +101,11 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="2252" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="2035" />
     <option name="y" value="-4" />
-    <option name="width" value="1851" />
-    <option name="height" value="1068" />
+    <option name="width" value="1849" />
+    <option name="height" value="1060" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -234,7 +236,7 @@
   <component name="ToolWindowManager">
     <frame x="1984" y="-11" width="1857" height="1092" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.5113322" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23935877" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -244,7 +246,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.20447609" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.34352702" />
+      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.34352702" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -651,12 +653,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/modules/experiments/src/mainForm.form">
+      <provider selected="true" editor-type-id="ui-designer" />
       <provider editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="379" column="13" selection-start-line="379" selection-start-column="13" selection-end-line="379" selection-end-column="13" />
         </state>
       </provider>
-      <provider selected="true" editor-type-id="ui-designer" />
     </entry>
     <entry file="file://$PROJECT_DIR$/modules/experiments/src/mainForm.java">
       <provider selected="true" editor-type-id="text-editor">
