@@ -5,37 +5,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 import org.cloudbus.cloudsim.*;
-import org.cloudbus.cloudsim.container.containerProvisioners.ContainerBwProvisionerSimple;
-import org.cloudbus.cloudsim.container.containerProvisioners.ContainerPe;
-import org.cloudbus.cloudsim.container.containerProvisioners.ContainerRamProvisionerSimple;
-import org.cloudbus.cloudsim.container.containerProvisioners.CotainerPeProvisionerSimple;
-import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmBwProvisionerSimple;
-import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmPe;
-import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmPeProvisionerSimple;
-import org.cloudbus.cloudsim.container.containerVmProvisioners.ContainerVmRamProvisionerSimple;
-import org.cloudbus.cloudsim.container.core.*;
-import org.cloudbus.cloudsim.container.core.Container;
-import org.cloudbus.cloudsim.container.hostSelectionPolicies.HostSelectionPolicy;
-import org.cloudbus.cloudsim.container.hostSelectionPolicies.HostSelectionPolicyFirstFit;
-import org.cloudbus.cloudsim.container.resourceAllocatorMigrationEnabled.PowerContainerVmAllocationPolicyMigrationAbstractHostSelection;
-import org.cloudbus.cloudsim.container.resourceAllocators.ContainerAllocationPolicy;
-import org.cloudbus.cloudsim.container.resourceAllocators.ContainerVmAllocationPolicy;
-import org.cloudbus.cloudsim.container.resourceAllocators.PowerContainerAllocationPolicySimple;
-import org.cloudbus.cloudsim.container.schedulers.ContainerCloudletSchedulerDynamicWorkload;
-import org.cloudbus.cloudsim.container.schedulers.ContainerSchedulerTimeSharedOverSubscription;
-import org.cloudbus.cloudsim.container.schedulers.ContainerVmSchedulerTimeSharedOverSubscription;
-import org.cloudbus.cloudsim.container.utils.IDs;
-import org.cloudbus.cloudsim.container.vmSelectionPolicies.PowerContainerVmSelectionPolicy;
-import org.cloudbus.cloudsim.container.vmSelectionPolicies.PowerContainerVmSelectionPolicyMaximumUsage;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -73,6 +51,12 @@ public class mainForm extends JFrame {
     private JRadioButton radioBtnSameVms;
     private JRadioButton radioBtnIndividualVms;
     private JTextArea txtIndividualVmSpecification;
+    private JRadioButton radioBtnManualTask;
+    private JRadioButton radioBtnTasksFile;
+    private JTextField txtTasksFilePath;
+    private JRadioButton radioBtnGocjGenerator;
+    private JTextField txtGocjOriginalDatasetPath;
+    private JTextField txtGocjJobsCount;
 
 
     private java.util.List<Cloudlet> cloudletList;
@@ -137,6 +121,46 @@ public class mainForm extends JFrame {
                     txtVmCoreMips.setEnabled(true);
                     txtVmRam.setEnabled(true);
                     txtIndividualVmSpecification.setEnabled(false);
+                }
+            }
+        });
+
+        radioBtnManualTask.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    txtJobJobsCount.setEnabled(true);
+                    txtJobLength.setEnabled(true);
+                }
+                else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    txtJobJobsCount.setEnabled(false);
+                    txtJobLength.setEnabled(false);
+                }
+            }
+        });
+
+        radioBtnTasksFile.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    txtTasksFilePath.setEnabled(true);
+                }
+                else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    txtTasksFilePath.setEnabled(false);
+                }
+            }
+        });
+
+        radioBtnGocjGenerator.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    txtGocjOriginalDatasetPath.setEnabled(true);
+                    txtGocjJobsCount.setEnabled(true);
+                }
+                else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    txtGocjOriginalDatasetPath.setEnabled(false);
+                    txtGocjJobsCount.setEnabled(false);
                 }
             }
         });
@@ -270,6 +294,20 @@ public class mainForm extends JFrame {
         //broker.bindCloudletToVm(newCloudLet.getCloudletId(),vmid);
     }
 
+    private void createCloudlet(int cloudletid, int cloudletLength){
+
+        UtilizationModel utilizationModel = new UtilizationModelFull();
+
+        Cloudlet newCloudLet = new Cloudlet(cloudletid, cloudletLength, CloudletCoreCount, CloudletFileSize, CloudletOutputSize,
+                utilizationModel, utilizationModel, utilizationModel);
+
+        newCloudLet.setUserId(broker.getId());
+
+        cloudletList.add(newCloudLet);
+
+        //broker.bindCloudletToVm(newCloudLet.getCloudletId(),vmid);
+    }
+
     private void runSimulation(){
 
         updateModel();
@@ -321,8 +359,41 @@ public class mainForm extends JFrame {
             broker.submitVmList(vmlist);
 
             cloudletList.clear();
-            for (int i = 0; i < CloudletCount; i++){
-                createCloudlet(i);
+
+            if (radioBtnManualTask.isSelected()){
+
+                for (int i = 0; i < CloudletCount; i++){
+                    createCloudlet(i);
+                }
+            }
+            else if (radioBtnTasksFile.isSelected()){
+
+                FileReader reader = new FileReader(txtTasksFilePath.getText());
+                BufferedReader buffer = new BufferedReader(reader);
+
+                String line;
+                int currentCloudletId = 0;
+
+                while ((line = buffer.readLine()) != null){
+
+                    createCloudlet(currentCloudletId, Integer.parseInt(line));
+                    currentCloudletId++;
+                }
+
+                reader.close();
+            }
+            else if (radioBtnGocjGenerator.isSelected()){
+
+                long[] gocjJobs = GocjGenerator.createGoCJ(Integer.parseInt(txtGocjJobsCount.getText()),
+                        txtGocjOriginalDatasetPath.getText());
+
+                int currentCloudletId = 0;
+
+                for (long cloudletLength : gocjJobs){
+
+                    createCloudlet(currentCloudletId, (int)cloudletLength);
+                    currentCloudletId++;
+                }
             }
 
             broker.submitCloudletList(cloudletList);
