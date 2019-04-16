@@ -81,9 +81,9 @@ public class mainForm extends JFrame {
     // Resources
     public int DatacenterCount = 1;
     public int HostCount = 1;
-    public int HostCoreCount = 1; //number of cores (Processing Elements (PE) count)
+    public int HostCoreCount = 20; //number of cores (Processing Elements (PE) count)
     public int HostCoreMips = 10000;
-    public int HostRam = 4096;
+    public int HostRam = 16384;
     public long HostStorage = 1000000;
     public int HostBandwidth = 10000;
     public int VmCount = 4;
@@ -150,7 +150,7 @@ public class mainForm extends JFrame {
                             new BwProvisionerSimple(HostBandwidth),
                             HostStorage,
                             peList,
-                            new VmSchedulerTimeShared(peList)
+                            new VmSchedulerSpaceShared(peList)
                     )
             );
         }
@@ -216,7 +216,7 @@ public class mainForm extends JFrame {
         String vmm = "Xen"; //VMM name
 
         Vm newVm = new Vm(vmid, broker.getId(), VmCoreMips, VmCoreCount, VmRam, VmBandwidth, VmImageSize, vmm,
-                new CloudletSchedulerTimeShared());
+                new CloudletSchedulerSpaceShared());
 
         vmlist.add(newVm);
     }

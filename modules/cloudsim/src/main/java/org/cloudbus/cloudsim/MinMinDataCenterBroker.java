@@ -59,7 +59,6 @@ public class MinMinDataCenterBroker extends EtcDataCenterBroker {
             cloudlet.setVmId(vm.getId());
             sendNow(getVmsToDatacentersMap().get(vm.getId()), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
             cloudletsSubmitted++;
-            vmIndex = (vmIndex + 1) % getVmsCreatedList().size();
             getCloudletSubmittedList().add(cloudlet);
             successfullySubmitted.add(cloudlet);
 

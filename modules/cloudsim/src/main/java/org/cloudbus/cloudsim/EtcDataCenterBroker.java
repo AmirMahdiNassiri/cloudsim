@@ -30,6 +30,7 @@ public class EtcDataCenterBroker extends DatacenterBroker {
         for (int i = 0; i < cloudletList.size(); i++){
 
             Cloudlet currentCloudlet = cloudletList.get(i);
+            assert i == currentCloudlet.getVmId();
 
             List<Double> row = new ArrayList<>();
 
