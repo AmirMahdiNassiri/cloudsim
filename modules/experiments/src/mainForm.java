@@ -65,6 +65,9 @@ public class mainForm extends JFrame {
     private JTextField txtVmCoreCount;
     private JTextField txtHostRam;
     private JTextField txtVmRam;
+    private JRadioButton radioBtnMinMin;
+    private JRadioButton radioBtnMaxMin;
+    private JRadioButton radioBtnGenetic;
 
 
     private java.util.List<Cloudlet> cloudletList;
@@ -117,6 +120,8 @@ public class mainForm extends JFrame {
         cloudletList = new ArrayList<Cloudlet>();
 
         updateView();
+
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     private Datacenter createDatacenter(String name){
@@ -180,18 +185,21 @@ public class mainForm extends JFrame {
         return datacenter;
     }
 
-    private DatacenterBroker createBroker(String type){
+    private DatacenterBroker createBroker(){
 
         DatacenterBroker broker = null;
 
         try {
 
-            if (type == "MinMin")
+            if (radioBtnMinMin.isSelected())
                 broker = new MinMinDataCenterBroker("MinMinBroker");
-            else if (type == "MaxMin")
+
+            else if (radioBtnMaxMin.isSelected())
                 broker = new MaxMinDataCenterBroker("MaxMinBroker");
-            else if (type == "Genetic")
+
+            else if (radioBtnGenetic.isSelected())
                 broker = new GeneticDataCenterBroker("GeneticAlgorithmBroker");
+
             else
                 broker = new EtcDataCenterBroker("EtcBroker");
 
@@ -244,7 +252,7 @@ public class mainForm extends JFrame {
                 datacenterList.add(createDatacenter("Datacenter_" + i));
             }
 
-            broker = createBroker("Genetic");
+            broker = createBroker();
 
             vmlist.clear();
             for (int i = 0; i < VmCount; i++){
