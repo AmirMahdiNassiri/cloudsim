@@ -132,7 +132,9 @@
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <enabled value="false"/>
+                </properties>
               </component>
               <component id="e0686" class="javax.swing.JLabel">
                 <constraints>
@@ -148,7 +150,9 @@
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <enabled value="false"/>
+                </properties>
               </component>
               <component id="7eacd" class="javax.swing.JLabel">
                 <constraints>
@@ -245,7 +249,7 @@
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <selected value="true"/>
+                  <selected value="false"/>
                   <text value="Manually define"/>
                 </properties>
               </component>
@@ -264,7 +268,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <enabled value="false"/>
+                  <enabled value="true"/>
                   <text value="GoCJ/GoCJ_Dataset_250.txt"/>
                 </properties>
               </component>
@@ -273,6 +277,7 @@
                   <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <selected value="true"/>
                   <text value="Read task lengths from file"/>
                 </properties>
               </component>
@@ -366,7 +371,9 @@
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <enabled value="false"/>
+                </properties>
               </component>
               <component id="4442" class="javax.swing.JLabel">
                 <constraints>
@@ -436,7 +443,9 @@
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <enabled value="false"/>
+                </properties>
               </component>
               <component id="c1b7" class="javax.swing.JLabel">
                 <constraints>
@@ -453,6 +462,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <enabled value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -489,6 +499,7 @@
                   </grid>
                 </constraints>
                 <properties>
+                  <enabled value="false"/>
                   <text value=""/>
                 </properties>
               </component>
@@ -497,7 +508,7 @@
                   <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <selected value="true"/>
+                  <selected value="false"/>
                   <text value="Same VM Specification"/>
                 </properties>
               </component>
@@ -506,6 +517,7 @@
                   <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <selected value="true"/>
                   <text value="Individually defined #core,MIPS,RAM-#core,MIPS,RAM-..."/>
                 </properties>
               </component>
@@ -516,9 +528,9 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <enabled value="false"/>
+                  <enabled value="true"/>
                   <lineWrap value="true"/>
-                  <text value="1,250,512-1,500,512"/>
+                  <text value="1,1000,512-1,1025,512-1,1050,512-1,1075,512-1,1100,512-1,1125,512-1,1150,512-1,1175,512-1,1200,512-1,1225,512-1,1250,512-1,1275,512-1,1300,512-1,1325,512-1,1350,512-1,1375,512"/>
                 </properties>
               </component>
             </children>
@@ -538,7 +550,7 @@
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <selected value="true"/>
+          <selected value="false"/>
           <text value="MinMin"/>
         </properties>
       </component>
@@ -555,6 +567,7 @@
           <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <selected value="true"/>
           <text value="Genetic Algorithm"/>
         </properties>
       </component>

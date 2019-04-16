@@ -80,7 +80,7 @@ public class mainForm extends JFrame {
     public int VmCoreMips = 250;
     public int VmRam = 1024;
     public long VmImageSize = 10000;
-    public int VmBandwidth = 1000;
+    public int VmBandwidth = 100;
 
     // Tasks
     public int CloudletCount = 10;

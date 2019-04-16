@@ -24,7 +24,7 @@ public class GocjGenerator  {
     public static long[] createGoCJ(int num, String originalDatasetPath) throws NumberFormatException, IOException
     {
         dataTable = new HashMap<Integer,Long>();
-        Random random = new Random();
+        Random random = new Random(1000);
         long jobSizes[] = new long[num];
         int per = 0;
         FileReader in = new FileReader(originalDatasetPath);

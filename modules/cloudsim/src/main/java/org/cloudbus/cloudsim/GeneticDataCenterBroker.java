@@ -25,7 +25,7 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
         CreateEtcMatrix(cloudletList, vmList);
         List<Cloudlet> successfullySubmitted = new ArrayList<Cloudlet>();
 
-        LinkedHashMap<Integer, Integer> selectedSolution = getSchedulingByGeneticAlgorithm(32, cloudletList, vmList);
+        LinkedHashMap<Integer, Integer> selectedSolution = getSchedulingByGeneticAlgorithm(cloudletList, vmList);
 
         for (Map.Entry<Integer, Integer> entry : selectedSolution.entrySet()){
 
@@ -232,9 +232,9 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
         return result;
     }
 
-    protected LinkedHashMap<Integer, Integer> getSchedulingByGeneticAlgorithm(int steps,
-                                                                              List<? extends Cloudlet> cloudletList,
+    protected LinkedHashMap<Integer, Integer> getSchedulingByGeneticAlgorithm(List<? extends Cloudlet> cloudletList,
                                                                               List<? extends Vm> vmList,
+                                                                              int steps,
                                                                               int populationCount,
                                                                               int elitesCount,
                                                                               double mutationRate){
@@ -289,9 +289,9 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
         throw new UnsupportedOperationException();
     }
 
-    protected LinkedHashMap<Integer, Integer> getSchedulingByGeneticAlgorithm(int steps,
-                                                                              List<? extends Cloudlet> cloudletList,
+    protected LinkedHashMap<Integer, Integer> getSchedulingByGeneticAlgorithm(List<? extends Cloudlet> cloudletList,
                                                                               List<? extends Vm> vmList){
-        return getSchedulingByGeneticAlgorithm(steps, cloudletList, vmList, 64, 2, 0.1);
+        return getSchedulingByGeneticAlgorithm(cloudletList, vmList,
+                512,64, 2, 0.1);
     }
 }
