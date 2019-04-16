@@ -407,6 +407,7 @@ public class mainForm extends JFrame {
             printCloudletList();
 
             writeLineOutput("");
+            writeLineOutput("Makespan = " + ((EtcDataCenterBroker)broker).MakeSpan);
             writeLineOutput("Desired VM count = " + VmCount);
             writeLineOutput("VMs able to create = " + broker.getActualVmsCreatedCount());
             writeLineOutput("");

@@ -18,6 +18,8 @@ public class EtcDataCenterBroker extends DatacenterBroker {
     // The calculated ETC matrix
     protected Map<Integer, List<Double>> EtcMatrix;
 
+    public double MakeSpan;
+
     public EtcDataCenterBroker(String name) throws Exception {
         super(name);
     }
