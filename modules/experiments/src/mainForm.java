@@ -97,6 +97,8 @@ public class mainForm extends JFrame {
     // Results
     public LinkedHashMap<Integer, Integer> MinMinSolution;
     public LinkedHashMap<Integer, Integer> MaxMinSolution;
+    public double LastExperimentMakeSpan;
+    public double LastExperimentThroughputPerMilliseconds;
 
     public mainForm()
     {
@@ -443,6 +445,8 @@ public class mainForm extends JFrame {
                 }
             }
 
+            int cloudletSize = cloudletList.size();
+
             broker.submitCloudletList(cloudletList);
 
             CloudSim.startSimulation();
@@ -462,10 +466,14 @@ public class mainForm extends JFrame {
                 MaxMinSolution = ((MaxMinDataCenterBroker) broker).Solution;
             }
 
+            LastExperimentMakeSpan = ((EtcDataCenterBroker)broker).MakeSpan;
+            LastExperimentThroughputPerMilliseconds = cloudletSize / LastExperimentMakeSpan;
+
             writeLineOutput("");
-            writeLineOutput("Makespan = " + ((EtcDataCenterBroker)broker).MakeSpan);
+            writeLineOutput("Makespan = " + LastExperimentMakeSpan + " milliseconds");
+            writeLineOutput("Throughput = " + (LastExperimentThroughputPerMilliseconds * 1000) + " tasks per second");
             writeLineOutput("Elapsed milliseconds for scheduling = " + elapsedMillisecondsForScheduling);
-            writeLineOutput("Desired VM count = " + VmCount);
+            // writeLineOutput("Desired VM count = " + VmCount);
             writeLineOutput("VMs able to create = " + broker.getActualVmsCreatedCount());
             writeLineOutput("");
             writeLineOutput("Simulation Completed");
