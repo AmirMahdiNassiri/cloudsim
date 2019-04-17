@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim;
 
 import java.util.*;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.lists.CloudletList;
@@ -15,6 +16,9 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
     }
 
     protected void submitCloudlets() {
+
+        StopWatch watch = new StopWatch();
+        watch.start();
 
         // Maximum of all task completions e.g. makespan
         double maximumOfTaskCompletions = Double.MIN_VALUE;
@@ -62,6 +66,9 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
 
         // remove submitted cloudlets from waiting list
         getCloudletList().removeAll(successfullySubmitted);
+
+        watch.stop();
+        ElapsedMillisecondsForScheduling = watch.getTime();
     }
 
     // TODO: Does VmIds and CloudLetIds start from 0 ? I am using them as simple indices...

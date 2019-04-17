@@ -20,6 +20,8 @@ public class EtcDataCenterBroker extends DatacenterBroker {
 
     public double MakeSpan;
 
+    public long ElapsedMillisecondsForScheduling;
+
     public EtcDataCenterBroker(String name) throws Exception {
         super(name);
     }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.lists.CloudletList;
@@ -15,6 +16,9 @@ public class MinMinDataCenterBroker extends EtcDataCenterBroker {
     }
 
     protected void submitCloudlets() {
+
+        StopWatch watch = new StopWatch();
+        watch.start();
 
         // Maximum of all task completions e.g. makespan
         double maximumOfTaskCompletions = Double.MIN_VALUE;
@@ -74,5 +78,8 @@ public class MinMinDataCenterBroker extends EtcDataCenterBroker {
 
         // remove submitted cloudlets from waiting list
         getCloudletList().removeAll(successfullySubmitted);
+
+        watch.stop();
+        ElapsedMillisecondsForScheduling = watch.getTime();
     }
 }
