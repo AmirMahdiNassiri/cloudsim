@@ -57,6 +57,10 @@ public class mainForm extends JFrame {
     private JRadioButton radioBtnGocjGenerator;
     private JTextField txtGocjOriginalDatasetPath;
     private JTextField txtGocjJobsCount;
+    private JTextField txtGeneticTimeConstraint;
+    private JTextField txtGeneticTimeConstraintMultiplier;
+    private JCheckBox chkBoxTimeConstrainedGenetic;
+    private JButton btnResetTimeConstraint;
 
 
     private java.util.List<Cloudlet> cloudletList;
@@ -165,6 +169,27 @@ public class mainForm extends JFrame {
             }
         });
 
+        chkBoxTimeConstrainedGenetic.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    txtGeneticTimeConstraint.setEnabled(true);
+                    txtGeneticTimeConstraintMultiplier.setEnabled(true);
+                }
+                else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                    txtGeneticTimeConstraint.setEnabled(false);
+                    txtGeneticTimeConstraintMultiplier.setEnabled(false);
+                }
+            }
+        });
+
+        btnResetTimeConstraint.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtGeneticTimeConstraint.setText("0");
+            }
+        });
+
         vmlist = new ArrayList<Vm>();
         cloudletList = new ArrayList<Cloudlet>();
 
@@ -247,7 +272,16 @@ public class mainForm extends JFrame {
                 broker = new MaxMinDataCenterBroker("MaxMinBroker");
 
             else if (radioBtnGenetic.isSelected()){
+
                 GeneticDataCenterBroker geneticBroker = new GeneticDataCenterBroker("GeneticAlgorithmBroker");
+
+                if (chkBoxTimeConstrainedGenetic.isSelected()){
+
+                    long timeConstraint = Long.parseLong(txtGeneticTimeConstraint.getText());
+                    timeConstraint *= Long.parseLong(txtGeneticTimeConstraintMultiplier.getText());
+                    geneticBroker.setTimeConstrained(timeConstraint);
+                }
+
                 broker = geneticBroker;
             }
 
@@ -408,14 +442,30 @@ public class mainForm extends JFrame {
 
             printCloudletList();
 
+            long elapsedMillisecondsForScheduling = ((EtcDataCenterBroker)broker).ElapsedMillisecondsForScheduling;
+
             writeLineOutput("");
             writeLineOutput("Makespan = " + ((EtcDataCenterBroker)broker).MakeSpan);
-            writeLineOutput("Elapsed milliseconds for scheduling = " +
-                    ((EtcDataCenterBroker)broker).ElapsedMillisecondsForScheduling);
+            writeLineOutput("Elapsed milliseconds for scheduling = " + elapsedMillisecondsForScheduling);
             writeLineOutput("Desired VM count = " + VmCount);
             writeLineOutput("VMs able to create = " + broker.getActualVmsCreatedCount());
             writeLineOutput("");
             writeLineOutput("Simulation Completed");
+
+            if (radioBtnMinMin.isSelected())
+            {
+                long currentTimeConstraint = Long.parseLong(txtGeneticTimeConstraint.getText());
+
+                if (elapsedMillisecondsForScheduling > currentTimeConstraint)
+                    txtGeneticTimeConstraint.setText(Long.toString(elapsedMillisecondsForScheduling));
+            }
+            else if (radioBtnMaxMin.isSelected())
+            {
+                long currentTimeConstraint = Long.parseLong(txtGeneticTimeConstraint.getText());
+
+                if (elapsedMillisecondsForScheduling > currentTimeConstraint)
+                    txtGeneticTimeConstraint.setText(Long.toString(elapsedMillisecondsForScheduling));
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
