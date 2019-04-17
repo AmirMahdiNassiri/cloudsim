@@ -44,9 +44,9 @@ public class GocjGenerator  {
             int  rand = random.nextInt(100);
             jobSizes[i] = (rand%2 == 0)? dataTable.get(rand): getJobSize(rand);
         }
-        System.out.println("Lengths of Jobs");
-        for (int i=1; i<=num;i++)
-            System.out.println("Job." + i + " Size: " + jobSizes[i-1] + " MIs");
+//        System.out.println("Lengths of Jobs");
+//        for (int i=1; i<=num;i++)
+//            System.out.println("Job." + i + " Size: " + jobSizes[i-1] + " MIs");
 
         return jobSizes;
     }
