@@ -537,20 +537,12 @@
           </grid>
         </children>
       </grid>
-      <component id="92ede" class="javax.swing.JButton" binding="runSimulationButton" default-binding="true">
-        <constraints>
-          <grid row="3" column="0" row-span="1" col-span="10" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Run Simulation"/>
-        </properties>
-      </component>
       <component id="43803" class="javax.swing.JRadioButton" binding="radioBtnMinMin">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <selected value="false"/>
+          <selected value="true"/>
           <text value="MinMin"/>
         </properties>
       </component>
@@ -567,13 +559,15 @@
           <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <selected value="true"/>
+          <selected value="false"/>
           <text value="Genetic Algorithm"/>
         </properties>
       </component>
       <scrollpane id="39e0d">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="10" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="0" row-span="1" col-span="10" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="0" height="200"/>
+          </grid>
         </constraints>
         <properties/>
         <border type="none"/>
@@ -648,6 +642,22 @@
         <properties>
           <selected value="false"/>
           <text value="Feed Genetic Algorithm with MinMin MaxMin solutions"/>
+        </properties>
+      </component>
+      <component id="6876f" class="javax.swing.JButton" binding="btnExperiment">
+        <constraints>
+          <grid row="3" column="5" row-span="1" col-span="5" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Run experiment for all algorithms"/>
+        </properties>
+      </component>
+      <component id="92ede" class="javax.swing.JButton" binding="runSimulationButton" default-binding="true">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="5" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Run Simulation"/>
         </properties>
       </component>
     </children>

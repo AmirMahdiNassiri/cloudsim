@@ -62,6 +62,7 @@ public class mainForm extends JFrame {
     private JCheckBox chkBoxTimeConstrainedGenetic;
     private JButton btnResetTimeConstraint;
     private JCheckBox chkBoxFeedGenetic;
+    private JButton btnExperiment;
 
 
     private java.util.List<Cloudlet> cloudletList;
@@ -97,8 +98,8 @@ public class mainForm extends JFrame {
     // Results
     public LinkedHashMap<Integer, Integer> MinMinSolution;
     public LinkedHashMap<Integer, Integer> MaxMinSolution;
-    public double LastExperimentMakeSpan;
-    public double LastExperimentThroughputPerMilliseconds;
+    public double LastExperimentMakeSpanInSeconds;
+    public double LastExperimentThroughputPerSeconds;
 
     public mainForm()
     {
@@ -193,6 +194,17 @@ public class mainForm extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 txtGeneticTimeConstraint.setText("0");
+            }
+        });
+
+        btnExperiment.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    runExperiment();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
@@ -466,12 +478,12 @@ public class mainForm extends JFrame {
                 MaxMinSolution = ((MaxMinDataCenterBroker) broker).Solution;
             }
 
-            LastExperimentMakeSpan = ((EtcDataCenterBroker)broker).MakeSpan;
-            LastExperimentThroughputPerMilliseconds = cloudletSize / LastExperimentMakeSpan;
+            LastExperimentMakeSpanInSeconds = ((EtcDataCenterBroker)broker).MakeSpanInSeconds;
+            LastExperimentThroughputPerSeconds = cloudletSize / LastExperimentMakeSpanInSeconds;
 
             writeLineOutput("");
-            writeLineOutput("Makespan = " + LastExperimentMakeSpan + " milliseconds");
-            writeLineOutput("Throughput = " + (LastExperimentThroughputPerMilliseconds * 1000) + " tasks per second");
+            writeLineOutput(String.format("Makespan = %.4f seconds", LastExperimentMakeSpanInSeconds));
+            writeLineOutput(String.format("Throughput = %.4f tasks per second", LastExperimentThroughputPerSeconds));
             writeLineOutput("Elapsed milliseconds for scheduling = " + elapsedMillisecondsForScheduling);
             // writeLineOutput("Desired VM count = " + VmCount);
             writeLineOutput("VMs able to create = " + broker.getActualVmsCreatedCount());
@@ -499,6 +511,71 @@ public class mainForm extends JFrame {
         }
     }
 
+    private void runExperiment() throws IOException{
+
+        String overallResults = "Alg,Makespan,Throughput" + System.lineSeparator();
+
+        txtGeneticTimeConstraint.setText("0");
+
+        radioBtnMinMin.setSelected(true);
+        runSimulation();
+        overallResults += "MinMin," + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
+                String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+
+        radioBtnMaxMin.setSelected(true);
+        runSimulation();
+        overallResults += "MaxMin," + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
+                String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+
+        chkBoxFeedGenetic.setSelected(false);
+
+        radioBtnGenetic.setSelected(true);
+
+        for (int i=0; i<=100; i+=5){
+
+            if (i == 0)
+                txtGeneticTimeConstraintMultiplier.setText("1");
+            else
+                txtGeneticTimeConstraintMultiplier.setText(String.format("%d", i));
+
+            runSimulation();
+
+            if (i == 0)
+                overallResults += "GA-1x," + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
+                        String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+            else
+                overallResults += String.format("GA-%dx,", i) + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
+                        String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+        }
+
+        chkBoxFeedGenetic.setSelected(true);
+
+        radioBtnGenetic.setSelected(true);
+
+        for (int i=0; i<=100; i+=5){
+
+            if (i == 0)
+                txtGeneticTimeConstraintMultiplier.setText("1");
+            else
+                txtGeneticTimeConstraintMultiplier.setText(String.format("%d", i));
+
+            runSimulation();
+
+            if (i == 0)
+                overallResults += "FGA-1x," + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
+                        String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+            else
+                overallResults += String.format("FGA-%dx,", i) + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
+                        String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+        }
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter("experimentOutput.txt"));
+
+        writer.write(overallResults);
+
+        writer.close();
+    }
+
     private void printCloudletList() throws IOException {
 
         int size = cloudletList.size();
@@ -507,7 +584,8 @@ public class mainForm extends JFrame {
         String indent = "\t";
         writeLineOutput("");
         writeLineOutput("CloudletID" + indent + "STATUS" + indent +
-                "DataCenterID" + indent + "VmID" + indent + "Time" + indent + "StartTime" + indent + "FinishTime");
+                "DataCenterID" + indent + "Length" + indent + "VmID" + indent +
+                "Time" + indent + "StartTime" + indent + "FinishTime");
 
         BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"));
 
@@ -523,7 +601,7 @@ public class mainForm extends JFrame {
             if (cloudlet.getCloudletStatus() == Cloudlet.SUCCESS){
                 writeOutput("SUCCESS");
 
-                writeLineOutput(indent + cloudlet.getResourceId() + indent + cloudlet.getVmId() +
+                writeLineOutput(indent + cloudlet.getResourceId() + indent + cloudlet.getCloudletLength() + indent + cloudlet.getVmId() +
                         indent + dft.format(cloudlet.getActualCPUTime()) + indent + dft.format(cloudlet.getExecStartTime())+
                         indent + dft.format(cloudlet.getFinishTime()));
 

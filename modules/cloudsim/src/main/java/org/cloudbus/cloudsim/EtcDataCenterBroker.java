@@ -14,7 +14,7 @@ public class EtcDataCenterBroker extends DatacenterBroker {
     // The calculated ETC matrix
     protected Map<Integer, List<Double>> EtcMatrix;
 
-    public double MakeSpan;
+    public double MakeSpanInSeconds;
 
     public LinkedHashMap<Integer, Integer> Solution;
 

@@ -67,7 +67,7 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
             DeleteCloudletFromEtcMatrix(cloudLetId);
         }
 
-        MakeSpan = maximumOfTaskCompletions;
+        MakeSpanInSeconds = maximumOfTaskCompletions;
 
         // remove submitted cloudlets from waiting list
         getCloudletList().removeAll(successfullySubmitted);

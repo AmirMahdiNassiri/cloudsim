@@ -79,7 +79,7 @@ public class MinMinDataCenterBroker extends EtcDataCenterBroker {
             DeleteCloudletFromEtcMatrix(minCloudletId);
         }
 
-        MakeSpan = maximumOfTaskCompletions;
+        MakeSpanInSeconds = maximumOfTaskCompletions;
 
         // remove submitted cloudlets from waiting list
         getCloudletList().removeAll(successfullySubmitted);
