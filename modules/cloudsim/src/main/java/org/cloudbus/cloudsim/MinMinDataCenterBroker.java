@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ public class MinMinDataCenterBroker extends EtcDataCenterBroker {
 
         StopWatch watch = new StopWatch();
         watch.start();
+
+        Solution = new LinkedHashMap<>();
 
         // Maximum of all task completions e.g. makespan
         double maximumOfTaskCompletions = Double.MIN_VALUE;
@@ -54,6 +57,8 @@ public class MinMinDataCenterBroker extends EtcDataCenterBroker {
             Cloudlet cloudlet = CloudletList.getById(getCloudletList(), minCloudletId);
             vm = getVmsCreatedList().get(vmIndex);
             double newTaskDuration = cloudlet.getCloudletLength() / vm.getMips();
+
+            Solution.put(minCloudletId, vmIndex);
 
             if (!Log.isDisabled()) {
                 Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Sending cloudlet ",

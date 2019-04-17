@@ -61,6 +61,7 @@ public class mainForm extends JFrame {
     private JTextField txtGeneticTimeConstraintMultiplier;
     private JCheckBox chkBoxTimeConstrainedGenetic;
     private JButton btnResetTimeConstraint;
+    private JCheckBox chkBoxFeedGenetic;
 
 
     private java.util.List<Cloudlet> cloudletList;
@@ -93,6 +94,9 @@ public class mainForm extends JFrame {
     public long CloudletFileSize = 300;
     public long CloudletOutputSize = 300;
 
+    // Results
+    public LinkedHashMap<Integer, Integer> MinMinSolution;
+    public LinkedHashMap<Integer, Integer> MaxMinSolution;
 
     public mainForm()
     {
@@ -282,6 +286,13 @@ public class mainForm extends JFrame {
                     geneticBroker.setTimeConstrained(timeConstraint);
                 }
 
+                if (chkBoxFeedGenetic.isSelected()){
+                    assert (MinMinSolution != null);
+                    assert (MaxMinSolution != null);
+                    geneticBroker.feedInitialChromosome(MinMinSolution);
+                    geneticBroker.feedInitialChromosome(MaxMinSolution);
+                }
+
                 broker = geneticBroker;
             }
 
@@ -443,6 +454,13 @@ public class mainForm extends JFrame {
             printCloudletList();
 
             long elapsedMillisecondsForScheduling = ((EtcDataCenterBroker)broker).ElapsedMillisecondsForScheduling;
+
+            if (broker instanceof MinMinDataCenterBroker){
+                MinMinSolution = ((MinMinDataCenterBroker) broker).Solution;
+            }
+            else if(broker instanceof MaxMinDataCenterBroker){
+                MaxMinSolution = ((MaxMinDataCenterBroker) broker).Solution;
+            }
 
             writeLineOutput("");
             writeLineOutput("Makespan = " + ((EtcDataCenterBroker)broker).MakeSpan);

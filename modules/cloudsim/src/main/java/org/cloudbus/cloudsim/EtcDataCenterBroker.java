@@ -1,10 +1,6 @@
 package org.cloudbus.cloudsim;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
@@ -19,6 +15,8 @@ public class EtcDataCenterBroker extends DatacenterBroker {
     protected Map<Integer, List<Double>> EtcMatrix;
 
     public double MakeSpan;
+
+    public LinkedHashMap<Integer, Integer> Solution;
 
     public long ElapsedMillisecondsForScheduling;
 

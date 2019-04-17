@@ -14,6 +14,8 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
     long timeConstraint;
     boolean isTimeConstrained = false;
 
+    List<LinkedHashMap<Integer, Integer>> initialFedChromosomes;
+
     public GeneticDataCenterBroker(String name) throws Exception {
         super(name);
     }
@@ -111,14 +113,18 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
         return result;
     }
 
-    protected List<LinkedHashMap<Integer, Integer>> createInitialRandomChromosomes(int count){
+    protected List<LinkedHashMap<Integer, Integer>> createInitialChromosomes(int count){
 
         List<LinkedHashMap<Integer, Integer>> result = new LinkedList<>();
 
         int cloudletCount = getCloudletList().size();
         int vmsCount = getVmsCreatedList().size();
 
-        for (int i = 0; i < count; i++){
+        if (initialFedChromosomes != null){
+            result.addAll(initialFedChromosomes);
+        }
+
+        for (int i = result.size(); i < count; i++){
             result.add(createRandomChromosome(cloudletCount, vmsCount));
         }
 
@@ -249,7 +255,7 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
                                                                               int elitesCount,
                                                                               double mutationRate){
 
-        List<LinkedHashMap<Integer, Integer>> population = createInitialRandomChromosomes(populationCount);
+        List<LinkedHashMap<Integer, Integer>> population = createInitialChromosomes(populationCount);
 
         for (int i = 0; i < steps; i++){
 
@@ -267,7 +273,10 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
                 LinkedHashMap<Integer, Integer> eliteChromosome = population.get(eliteIndex);
 
                 if (i == steps -1)
+                {
+                    Solution = eliteChromosome;
                     return eliteChromosome;
+                }
 
                 eliteChromosomes.add(eliteChromosome);
 
@@ -309,7 +318,7 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
         StopWatch watch = new StopWatch();
         watch.start();
 
-        List<LinkedHashMap<Integer, Integer>> population = createInitialRandomChromosomes(populationCount);
+        List<LinkedHashMap<Integer, Integer>> population = createInitialChromosomes(populationCount);
         LinkedHashMap<Integer, Integer> currentBestChromosome = null;
 
         long elapsedTime = watch.getTime();
@@ -361,6 +370,7 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
             elapsedTime = watch.getTime();
         }
 
+        Solution = currentBestChromosome;
         return currentBestChromosome;
     }
 
@@ -386,5 +396,15 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
     public void setTimeConstrained(long constraint) {
         isTimeConstrained = true;
         timeConstraint = constraint;
+    }
+
+    public void feedInitialChromosome(LinkedHashMap<Integer, Integer> chromosome){
+
+        if (initialFedChromosomes == null)
+        {
+            initialFedChromosomes = new ArrayList<>();
+        }
+
+        initialFedChromosomes.add(chromosome);
     }
 }
