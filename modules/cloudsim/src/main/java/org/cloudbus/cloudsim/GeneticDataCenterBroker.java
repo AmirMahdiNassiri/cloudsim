@@ -11,6 +11,9 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
 
     Random random = new Random(1000);
 
+    long timeConstraint;
+    boolean isTimeConstrained = false;
+
     public GeneticDataCenterBroker(String name) throws Exception {
         super(name);
     }
@@ -297,8 +300,91 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
     }
 
     protected LinkedHashMap<Integer, Integer> getSchedulingByGeneticAlgorithm(List<? extends Cloudlet> cloudletList,
+                                                                              List<? extends Vm> vmList,
+                                                                              long timeConstraint,
+                                                                              int populationCount,
+                                                                              int elitesCount,
+                                                                              double mutationRate){
+
+        StopWatch watch = new StopWatch();
+        watch.start();
+
+        List<LinkedHashMap<Integer, Integer>> population = createInitialRandomChromosomes(populationCount);
+        LinkedHashMap<Integer, Integer> currentBestChromosome = null;
+
+        long elapsedTime = watch.getTime();
+
+        while(elapsedTime < timeConstraint){
+
+            // Calculate fitness values
+            List<Double> fitnessValues = fitnessFunction(population, cloudletList, vmList);
+
+            List<LinkedHashMap<Integer, Integer>> eliteChromosomes = new ArrayList<>();
+
+            List<Double> fitnessValuesCopy = new ArrayList<>(fitnessValues);
+
+            for (int e = 0; e < elitesCount; e++) {
+
+                double eliteFitness = Collections.max(fitnessValuesCopy);
+                int eliteIndex = fitnessValuesCopy.indexOf(eliteFitness);
+                LinkedHashMap<Integer, Integer> eliteChromosome = population.get(eliteIndex);
+
+                if(e == 0)
+                    currentBestChromosome = eliteChromosome;
+
+                eliteChromosomes.add(eliteChromosome);
+
+                fitnessValuesCopy.remove(eliteIndex);
+            }
+
+            // Initialize next generation list and put elites in the next generation directly
+            List<LinkedHashMap<Integer, Integer>> nextGeneration = new LinkedList<>(eliteChromosomes);
+
+            // Put crossover children
+            for (int c = 0; c < populationCount - elitesCount; c++) {
+
+                LinkedHashMap<Integer, Integer> parent1 = population.get(binaryTournamentSelection(population, fitnessValues));
+                LinkedHashMap<Integer, Integer> parent2 = population.get(binaryTournamentSelection(population, fitnessValues));
+
+                LinkedHashMap<Integer, Integer> child = crossover(parent1, parent2);
+
+                if (random.nextDouble() < mutationRate)
+                    mutateChromosome(child, cloudletList.size(), vmList.size());
+
+                nextGeneration.add(child);
+            }
+
+            assert nextGeneration.size() == populationCount;
+
+            population = nextGeneration;
+
+            elapsedTime = watch.getTime();
+        }
+
+        return currentBestChromosome;
+    }
+
+    protected LinkedHashMap<Integer, Integer> getSchedulingByGeneticAlgorithm(List<? extends Cloudlet> cloudletList,
                                                                               List<? extends Vm> vmList){
-        return getSchedulingByGeneticAlgorithm(cloudletList, vmList,
-                512,64, 2, 0.1);
+
+        int defaultSteps = 512;
+        int defaultPopulationCount = 64;
+        int defaultElitesCount = 2;
+        double defaultMutationRate = 0.1;
+
+        if (isTimeConstrained){
+            return getSchedulingByGeneticAlgorithm(cloudletList, vmList,
+                    timeConstraint, defaultPopulationCount, defaultElitesCount, defaultMutationRate);
+        }
+        else
+        {
+            return getSchedulingByGeneticAlgorithm(cloudletList, vmList,
+                    defaultSteps,defaultPopulationCount, defaultElitesCount, defaultMutationRate);
+        }
+    }
+
+    public void setTimeConstrained(long constraint) {
+        isTimeConstrained = true;
+        timeConstraint = constraint;
     }
 }

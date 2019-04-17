@@ -246,8 +246,10 @@ public class mainForm extends JFrame {
             else if (radioBtnMaxMin.isSelected())
                 broker = new MaxMinDataCenterBroker("MaxMinBroker");
 
-            else if (radioBtnGenetic.isSelected())
-                broker = new GeneticDataCenterBroker("GeneticAlgorithmBroker");
+            else if (radioBtnGenetic.isSelected()){
+                GeneticDataCenterBroker geneticBroker = new GeneticDataCenterBroker("GeneticAlgorithmBroker");
+                broker = geneticBroker;
+            }
 
             else
                 broker = new EtcDataCenterBroker("EtcBroker");
@@ -408,6 +410,8 @@ public class mainForm extends JFrame {
 
             writeLineOutput("");
             writeLineOutput("Makespan = " + ((EtcDataCenterBroker)broker).MakeSpan);
+            writeLineOutput("Elapsed milliseconds for scheduling = " +
+                    ((EtcDataCenterBroker)broker).ElapsedMillisecondsForScheduling);
             writeLineOutput("Desired VM count = " + VmCount);
             writeLineOutput("VMs able to create = " + broker.getActualVmsCreatedCount());
             writeLineOutput("");
