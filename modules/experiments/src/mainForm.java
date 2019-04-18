@@ -100,6 +100,7 @@ public class mainForm extends JFrame {
     public LinkedHashMap<Integer, Integer> MaxMinSolution;
     public double LastExperimentMakeSpanInSeconds;
     public double LastExperimentThroughputPerSeconds;
+    public double LastExperimentArur;
 
     public mainForm()
     {
@@ -480,10 +481,12 @@ public class mainForm extends JFrame {
 
             LastExperimentMakeSpanInSeconds = ((EtcDataCenterBroker)broker).MakeSpanInSeconds;
             LastExperimentThroughputPerSeconds = cloudletSize / LastExperimentMakeSpanInSeconds;
+            LastExperimentArur = ((EtcDataCenterBroker)broker).getArur();
 
             writeLineOutput("");
             writeLineOutput(String.format("Makespan = %.4f seconds", LastExperimentMakeSpanInSeconds));
             writeLineOutput(String.format("Throughput = %.4f tasks per second", LastExperimentThroughputPerSeconds));
+            writeLineOutput(String.format("Average Resource Utilization Ratio (ARUR) = %.4f", LastExperimentArur));
             writeLineOutput("Elapsed milliseconds for scheduling = " + elapsedMillisecondsForScheduling);
             // writeLineOutput("Desired VM count = " + VmCount);
             writeLineOutput("VMs able to create = " + broker.getActualVmsCreatedCount());
@@ -513,19 +516,21 @@ public class mainForm extends JFrame {
 
     private void runExperiment() throws IOException{
 
-        String overallResults = "Alg,Makespan,Throughput" + System.lineSeparator();
+        String overallResults = "Alg,Makespan,Throughput,ARUR" + System.lineSeparator();
 
         txtGeneticTimeConstraint.setText("0");
 
         radioBtnMinMin.setSelected(true);
         runSimulation();
         overallResults += "MinMin," + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
-                String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+                String.format("%.4f,", LastExperimentThroughputPerSeconds) +
+                String.format("%.4f", LastExperimentArur) + System.lineSeparator();
 
         radioBtnMaxMin.setSelected(true);
         runSimulation();
         overallResults += "MaxMin," + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
-                String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+                String.format("%.4f,", LastExperimentThroughputPerSeconds) +
+                String.format("%.4f", LastExperimentArur) + System.lineSeparator();
 
         chkBoxFeedGenetic.setSelected(false);
 
@@ -542,10 +547,12 @@ public class mainForm extends JFrame {
 
             if (i == 0)
                 overallResults += "GA-1x," + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
-                        String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+                        String.format("%.4f,", LastExperimentThroughputPerSeconds) +
+                        String.format("%.4f", LastExperimentArur) + System.lineSeparator();
             else
                 overallResults += String.format("GA-%dx,", i) + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
-                        String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+                        String.format("%.4f,", LastExperimentThroughputPerSeconds) +
+                        String.format("%.4f", LastExperimentArur) + System.lineSeparator();
         }
 
         chkBoxFeedGenetic.setSelected(true);
@@ -563,10 +570,12 @@ public class mainForm extends JFrame {
 
             if (i == 0)
                 overallResults += "FGA-1x," + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
-                        String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+                        String.format("%.4f,", LastExperimentThroughputPerSeconds) +
+                        String.format("%.4f", LastExperimentArur) + System.lineSeparator();
             else
                 overallResults += String.format("FGA-%dx,", i) + String.format("%.4f,", LastExperimentMakeSpanInSeconds) +
-                        String.format("%.4f", LastExperimentThroughputPerSeconds) + System.lineSeparator();
+                        String.format("%.4f,", LastExperimentThroughputPerSeconds) +
+                        String.format("%.4f", LastExperimentArur) + System.lineSeparator();
         }
 
         BufferedWriter writer = new BufferedWriter(new FileWriter("experimentOutput.txt"));
@@ -587,7 +596,7 @@ public class mainForm extends JFrame {
                 "DataCenterID" + indent + "Length" + indent + "VmID" + indent +
                 "Time" + indent + "StartTime" + indent + "FinishTime");
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"));
+//        BufferedWriter writer = new BufferedWriter(new FileWriter("output.txt"));
 
         DecimalFormat dft = new DecimalFormat("###.##");
         for (int i = 0; i < size; i++) {
@@ -613,13 +622,13 @@ public class mainForm extends JFrame {
                     output += ",";
                 }
 
-                writer.write(output);
+//                writer.write(output);
             }
 
-            writer.write(System.lineSeparator());
+//            writer.write(System.lineSeparator());
         }
 
-        writer.close();
+//        writer.close();
     }
 
     private void clearOutput(){

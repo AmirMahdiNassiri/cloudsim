@@ -1,9 +1,6 @@
 package org.cloudbus.cloudsim;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -25,9 +22,10 @@ public class MaxMinDataCenterBroker extends EtcDataCenterBroker {
 
         // Maximum of all task completions e.g. makespan
         double maximumOfTaskCompletions = Double.MIN_VALUE;
-        int vmIndex = -1;
+        int vmId = -1;
         int cloudletCount = getCloudletList().size();
 
+        CreateVmAvailabilityTimes(getVmsCreatedList());
         CreateEtcMatrix(getCloudletList(), getVmsCreatedList());
         List<Cloudlet> successfullySubmitted = new ArrayList<Cloudlet>();
 
@@ -63,15 +61,18 @@ public class MaxMinDataCenterBroker extends EtcDataCenterBroker {
                 if (rowMinTaskCompletion > maxMinTaskCompletion){
                     maxMinTaskCompletion = rowMinTaskCompletion;
                     maxMinCloudletId = rowMinCloudletId;
-                    vmIndex = rowMinVmIndex;
+                    vmId = rowMinVmIndex;
                 }
             }
 
             Cloudlet cloudlet = CloudletList.getById(getCloudletList(), maxMinCloudletId);
-            vm = getVmsCreatedList().get(vmIndex);
+            vm = getVmsCreatedList().get(vmId);
             double newTaskDuration = cloudlet.getCloudletLength() / vm.getMips();
 
-            Solution.put(maxMinCloudletId, vmIndex);
+            // Update VmAvailabilityTimes
+            VmAvailabilityTimes.put(vmId, newTaskDuration + VmAvailabilityTimes.get(vmId));
+
+            Solution.put(maxMinCloudletId, vmId);
 
             if (!Log.isDisabled()) {
                 Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Sending cloudlet ",
@@ -88,7 +89,7 @@ public class MaxMinDataCenterBroker extends EtcDataCenterBroker {
                 maximumOfTaskCompletions = maxMinTaskCompletion;
             }
 
-            UpdateEtcMatrixByNewTaskDuration(vmIndex, newTaskDuration);
+            UpdateEtcMatrixByNewTaskDuration(vmId, newTaskDuration);
             DeleteCloudletFromEtcMatrix(maxMinCloudletId);
         }
 

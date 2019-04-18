@@ -31,6 +31,7 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
         List<? extends Cloudlet> cloudletList = getCloudletList();
         List<? extends Vm> vmList = getVmsCreatedList();
 
+        CreateVmAvailabilityTimes(getVmsCreatedList());
         CreateEtcMatrix(cloudletList, vmList);
         List<Cloudlet> successfullySubmitted = new ArrayList<Cloudlet>();
 
@@ -51,6 +52,9 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
             Cloudlet cloudlet = CloudletList.getById(cloudletList, cloudLetId);
             Vm vm = vmList.get(vmId);
             double newTaskDuration = cloudlet.getCloudletLength() / vm.getMips();
+
+            // Update VmAvailabilityTimes
+            VmAvailabilityTimes.put(vmId, newTaskDuration + VmAvailabilityTimes.get(vmId));
 
             if (!Log.isDisabled()) {
                 Log.printConcatLine(CloudSim.clock(), ": ", getName(), ": Sending cloudlet ",
