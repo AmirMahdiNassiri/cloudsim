@@ -177,36 +177,31 @@ public class GeneticDataCenterBroker extends EtcDataCenterBroker {
     protected int binaryTournamentSelection(List<LinkedHashMap<Integer, Integer>> currentPopulation,
                                             List<Double> fitnessValues){
 
-        if (currentPopulation.size() > 1){
+        List<LinkedHashMap<Integer, Integer>> remainingPopulation = new ArrayList<>(currentPopulation);
+        List<Double> remainingFitnessValues = new ArrayList<>(fitnessValues);
 
-            List<LinkedHashMap<Integer, Integer>> dividedPopulation1 = new ArrayList<>();
-            List<LinkedHashMap<Integer, Integer>> dividedPopulation2 = new ArrayList<>();
-            List<Double> fitnessValues1 = new ArrayList<>();
-            List<Double> fitnessValues2 = new ArrayList<>();
+        Double winningFitnessValue = Double.MIN_VALUE;
+        LinkedHashMap<Integer, Integer> winner = null;
 
-            for (int i = 0; i < currentPopulation.size(); i++){
+        while (remainingPopulation.size() > 0){
 
-                if (i < currentPopulation.size() / 2) {
-                    dividedPopulation1.add(currentPopulation.get(i));
-                    fitnessValues1.add(fitnessValues.get(i));
-                }
-                else {
-                    dividedPopulation2.add(currentPopulation.get(i));
-                    fitnessValues2.add(fitnessValues.get(i));
-                }
+            int randomOpponentIndex = random.nextInt(remainingPopulation.size());
+
+            LinkedHashMap<Integer, Integer> opponent = remainingPopulation.get(randomOpponentIndex);
+            remainingPopulation.remove(randomOpponentIndex);
+
+            Double opponentFitnessValue = remainingFitnessValues.get(randomOpponentIndex);
+            remainingFitnessValues.remove(randomOpponentIndex);
+
+            if (opponentFitnessValue > winningFitnessValue){
+                winningFitnessValue = opponentFitnessValue;
+                winner = opponent;
             }
-
-            int winner1Index = binaryTournamentSelection(dividedPopulation1, fitnessValues1);
-            int winner2Index = binaryTournamentSelection(dividedPopulation2, fitnessValues2);
-
-            // Each iteration returns index of the whole input
-            if (fitnessValues.get(winner1Index) > fitnessValues.get(fitnessValues1.size() + winner2Index))
-                return winner1Index;
-            else
-                return dividedPopulation1.size() + winner2Index;
         }
 
-        return 0;
+        int winnerIndex = currentPopulation.indexOf(winner);
+
+        return winnerIndex;
     }
 
     protected double fitnessFunction(LinkedHashMap<Integer, Integer> chromosome, List<? extends Cloudlet> cloudletList,
